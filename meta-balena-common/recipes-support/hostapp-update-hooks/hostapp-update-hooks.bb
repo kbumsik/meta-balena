@@ -9,6 +9,7 @@ inherit allarch
 
 HOSTAPP_HOOKS = " \
     0-bootfiles \
+    60-balena_migrate_storage \
     70-sshd_migrate_keys \
     80-rollback \
     "
