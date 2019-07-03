@@ -1,6 +1,11 @@
 Change log
 -----------
 
+# v2.38.3
+## (2019-07-03)
+
+* image-resin.bbclass: fixed a typo [Kyle Harding]
+
 # v2.38.2
 ## (2019-06-27)
 

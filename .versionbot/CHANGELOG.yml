@@ -1,4 +1,18 @@
 - commits:
+    - subject: 'image-resin.bbclass: fixed a typo'
+      hash: 5f048a9405b690ad55bbc11ad156afb152675832
+      body: |
+        Fixing a typo in the image size sanity check to ensure the
+        correct calculation of FAT overhead sectors.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kylemharding@gmail.com>
+        signed-off-by: Kyle Harding <kylemharding@gmail.com>
+      author: Kyle Harding
+  version: 2.38.3
+  date: 2019-07-03T13:41:09.504Z
+- commits:
     - subject: >-
         Update to kernel-modules-headers v0.0.20 to fix missing target modpost
         binary on kernel 5.0.3
