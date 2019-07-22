@@ -1,0 +1,14 @@
+#!/bin/sh
+
+basename -- "$0"
+pwd
+echo HOOKS_DIR=$1
+HOOKS_DIR=$1
+echo /etc/timestamp
+cat /etc/timestamp
+echo $HOOKS_DIR/../../etc/timestamp
+cat $HOOKS_DIR/../../etc/timestamp
+echo /etc/os-release
+cat /etc/os-release
+echo $HOOKS_DIR/../../etc/os-release
+cat $HOOKS_DIR/../../etc/os-release

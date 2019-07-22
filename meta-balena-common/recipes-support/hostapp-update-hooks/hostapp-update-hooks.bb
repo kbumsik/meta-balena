@@ -12,11 +12,16 @@ HOSTAPP_HOOKS = " \
     70-sshd_migrate_keys \
     80-rollback \
     "
+HOSTAPP_HOOKS_DIRS = " \
+    50-testhook \
+    "
+
 RESIN_BOOT_FINGERPRINT = "${RESIN_FINGERPRINT_FILENAME}.${RESIN_FINGERPRINT_EXT}"
 
 python __anonymous() {
     # Generate SRC_URI based on HOSTAPP_HOOKS
     hooks=d.getVar("HOSTAPP_HOOKS", True)
+    hooks = hooks + " " + d.getVar("HOSTAPP_HOOKS_DIRS", True)
     srcuri=d.getVar("SRC_URI", True)
     new_srcuri=srcuri
     for h in hooks.split():
@@ -37,6 +42,13 @@ RDEPENDS_${PN} = " \
 
 do_install() {
 	mkdir -p ${D}${sysconfdir}/hostapp-update-hooks.d/
+	for hdir in ${HOSTAPP_HOOKS_DIRS}; do
+		mkdir -p ${D}${sysconfdir}/hostapp-update-hooks.d/$hdir
+		hdir_hooks=$(find ${S}/${hdir} -type f)
+		for h in ${hdir_hooks}; do
+			install -m 0755 $h ${D}${sysconfdir}/hostapp-update-hooks.d/$hdir
+		done
+	done
 	for h in ${HOSTAPP_HOOKS}; do
 		install -m 0755 $h ${D}${sysconfdir}/hostapp-update-hooks.d
 	done

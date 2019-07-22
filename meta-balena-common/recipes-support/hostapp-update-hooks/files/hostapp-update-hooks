@@ -2,6 +2,62 @@
 
 set -o errexit
 
-for hook in /etc/hostapp-update-hooks.d/*; do
-	$hook
+prehooks=0
+posthooks=0
+forwardhooks=1
+commithooks=0
+
+HOOKS_DIR="/etc/hostapp-update-hooks.d/"
+
+while getopts 'abcd:f' flag; do
+	case "${flag}" in
+	# After = post-hooks
+	a) posthooks=1
+	   forwardhooks=0 ;;
+	# Before = pre-hooks
+	b) prehooks=1
+	   forwardhooks=0 ;;
+	# Commit = commit hooks
+	c) commithooks=1
+	   forwardhooks=0 ;;
+	# Directory = path to hooks directory. Used when running prehooks
+	d) HOOKS_DIR="${OPTARG}"
+	   echo "Using HOOKS_DIR = $HOOKS_DIR" ;;
+	# Full hooks, Run pre,forward and post. Useful for rollback etc.
+	f) prehooks=1
+	   forwardhooks=1
+	   posthooks=1 ;;
+	*) error "Unexpected option ${flag}" ;;
+	esac
 done
+
+list_of_forward_hooks=$(find "${HOOKS_DIR}" -type f | grep -v 'pre\|post\|cleanup\|commit' | sort)
+list_of_forward_cleanup_hooks=$(find "${HOOKS_DIR}" -type f | grep cleanup | sort)
+list_of_forward_commit_hooks=$(find "${HOOKS_DIR}" -type f | grep commit | sort)
+list_of_prehooks=$(find "${HOOKS_DIR}" -type f | grep pre | sort)
+list_of_posthooks=$(find "${HOOKS_DIR}" -type f | grep post | sort)
+
+if [ "$prehooks" = "1" ] ; then
+	for hook in $list_of_prehooks; do
+		$hook $HOOKS_DIR
+	done
+fi
+
+if [ "$forwardhooks" = "1" ] ; then
+	for hook in $list_of_forward_hooks; do
+		$hook $HOOKS_DIR
+		#todo. add forward_cleanup=1 if fail
+	done
+fi
+
+if [ "$posthooks" = "1" ] ; then
+	for hook in $list_of_posthooks; do
+		$hook $HOOKS_DIR
+	done
+fi
+
+if [ "$commithooks" = "1" ] ; then
+	for hook in $list_of_forward_commit_hooks; do
+		$hook $HOOKS_DIR
+	done
+fi
