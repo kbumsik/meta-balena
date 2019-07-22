@@ -42,4 +42,6 @@ if [ -f "${BOOTLOADER_FILE}" ]; then
 fi
 
 sync -f "${RESIN_BOOT_MOUNTPOINT}"
-echo "Rollback: Further rollbacks stopped"
+echo "Rollback: Further rollbacks stopped.. Running commit hooks"
+
+hostapp-update-hooks -c

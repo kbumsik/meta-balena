@@ -46,7 +46,7 @@ run_hooks_from_inactive () {
 	# which are the good set of files in ROLLBACK_ALTBOOT mode
 	# also tells the bootloaders to switch roots
 	cat << EOF | chroot "${old_rootfs}"
-	DURING_UPDATE=1 /usr/bin/hostapp-update-hooks
+	DURING_UPDATE=1 /usr/bin/hostapp-update-hooks -f
 EOF
 }
 
